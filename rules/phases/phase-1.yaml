@@ -1,22 +1,9 @@
 version: "1.0"
 kind: phase
 name: phase-1
-description: Phase 1 - 禁止直接 git 操作，强制确认
+description: Phase 1 - 重要操作确认，安全执行
 enabled: true
 rules:
-  - id: phase-1-git-ban
-    name: "禁止直接 git 操作"
-    condition:
-      phase: 1
-    content: |
-      当前阶段禁止直接 git 操作（含 status/add/commit/log/rm 等）。
-      任何版本控制操作前必须先征求确认。
-    priority: 100
-    enabled: true
-    tags:
-      - git
-      - security
-
   - id: phase-1-confirm-actions
     name: "重要操作需确认"
     condition:
@@ -30,4 +17,5 @@ rules:
     priority: 90
     enabled: true
     tags:
+      - security
       - confirmation

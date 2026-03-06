@@ -1,27 +1,9 @@
 version: "1.0"
 kind: phase
 name: phase-2
-description: Phase 2 - 允许版本控制，但需遵循规范
+description: Phase 2 - 代码质量与审查
 enabled: true
 rules:
-  - id: phase-2-commit-message
-    name: "提交信息规范"
-    condition:
-      phase: 2
-    content: |
-      Git 提交信息必须遵循 Conventional Commits 规范：
-      - feat: 新功能
-      - fix: 修复 bug
-      - docs: 文档变更
-      - refactor: 重构
-      - test: 测试相关
-      - chore: 构建/工具相关
-    priority: 80
-    enabled: true
-    tags:
-      - git
-      - convention
-
   - id: phase-2-code-review
     name: "代码变更需审查"
     condition:

@@ -8,29 +8,7 @@ description: Common error patterns to guard against
 enabled: true
 
 rules:
-  # 1. Git 操作拦截
-  - id: guard-git-operations
-    name: "禁止 Git 操作"
-    description: "当前阶段禁止直接 git 操作"
-    pattern:
-      tool: exec
-      param_patterns:
-        command: "^git\\s+(status|add|commit|push|pull|log|rm|branch|checkout)"
-    action: block
-    block_message: |
-      ⛔ Git 操作已拦截
-      
-      当前阶段禁止直接使用 git 命令。
-      如需版本控制操作，请先与用户确认。
-      
-      原命令将被阻断，请改用其他方式或请求用户授权。
-    priority: 100
-    enabled: true
-    tags:
-      - git
-      - version-control
-
-  # 2. 敏感文件修改拦截
+  # 1. 敏感文件修改拦截
   - id: guard-sensitive-config
     name: "敏感配置保护"
     description: "敏感配置文件修改需要备份确认"
@@ -58,7 +36,7 @@ rules:
       - config
       - security
 
-  # 3. 强制命令添加确认
+  # 2. 强制命令添加确认
   - id: guard-force-commands
     name: "强制命令拦截"
     description: "拦截可能导致不可逆操作的强制命令"
@@ -85,7 +63,7 @@ rules:
       - destructive
       - safety
 
-  # 4. 硬编码密钥检测
+  # 3. 硬编码密钥检测
   - id: guard-secrets-in-code
     name: "硬编码密钥检测"
     description: "检测代码中的硬编码密钥"
@@ -110,7 +88,7 @@ rules:
       - security
       - secrets
 
-  # 5. 路径遍历保护
+  # 4. 路径遍历保护
   - id: guard-path-traversal
     name: "路径遍历保护"
     description: "阻止危险路径操作"
