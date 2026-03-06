@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openclaw.dev/schemas/rules/v1.0.json",
+  "title": "OpenClaw Rules Schema",
+  "description": "Schema for OpenClaw anti-repeat-errors rule files",
+  "type": "object",
+  "required": ["version", "kind", "name", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Schema version (e.g., 1.0)"
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["phase", "task-type", "global"],
+      "description": "Type of rule set"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Name of the rule set"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500,
+      "description": "Description of the rule set"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the rule set is enabled"
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Rule"
+      },
+      "description": "List of rules in this set"
+    }
+  },
+  "definitions": {
+    "RuleCondition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "phase": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Phase number to match"
+        },
+        "task_type": {
+          "type": "string",
+          "description": "Task type to match"
+        },
+        "files_matching": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Glob patterns for file paths to match"
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Tool names to match"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Keywords to match in messages"
+        }
+      }
+    },
+    "Rule": {
+      "type": "object",
+      "required": ["id", "name", "content"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Unique identifier for the rule"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Human-readable name of the rule"
+        },
+        "condition": {
+          "$ref": "#/definitions/RuleCondition",
+          "description": "Conditions for rule activation"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Rule content to inject into context"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 50,
+          "description": "Rule priority (higher = more important)"
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the rule is enabled"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Tags for categorization"
+        }
+      }
+    }
+  }
+}

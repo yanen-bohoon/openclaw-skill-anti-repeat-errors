@@ -1,0 +1,49 @@
+version: "1.0"
+kind: global
+name: core
+description: Core rules that always apply
+enabled: true
+rules:
+  - id: core-no-destructive
+    name: "禁止破坏性操作"
+    condition: {}
+    content: |
+      没有用户确认，不执行破坏性操作：
+      - 删除文件或目录
+      - 清空数据
+      - 修改系统配置
+      - 发送不可逆的外部请求
+    priority: 100
+    enabled: true
+    tags:
+      - security
+      - destructive
+
+  - id: core-privacy-first
+    name: "隐私优先"
+    condition: {}
+    content: |
+      保护用户隐私：
+      - 不分享敏感信息
+      - 不存储不必要的个人信息
+      - 不向外部服务发送敏感数据
+    priority: 100
+    enabled: true
+    tags:
+      - privacy
+      - security
+
+  - id: core-error-handling
+    name: "错误处理"
+    condition: {}
+    content: |
+      遇到错误时：
+      1. 记录错误详情
+      2. 提供可操作的恢复建议
+      3. 不隐藏关键错误信息
+      4. 提供重试选项（如适用）
+    priority: 90
+    enabled: true
+    tags:
+      - error
+      - ux

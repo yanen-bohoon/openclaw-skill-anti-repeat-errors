@@ -1,0 +1,65 @@
+version: "1.0"
+kind: task-type
+name: coding
+description: Coding task rules
+enabled: true
+rules:
+  - id: coding-sensitive-config
+    name: "敏感配置修改需备份"
+    condition:
+      files_matching:
+        - "**/.openclaw/openclaw.json"
+        - "**/.config/openclaw/gateway.env"
+        - "**/.openclaw/cron/jobs.json"
+        - "**/Library/LaunchAgents/ai.openclaw.*.plist"
+    content: |
+      修改敏感配置文件前必须：
+      1. 先备份原文件
+      2. 仅最小改动
+      3. 改后运行健康检查
+      4. 保留 before/after 证据
+    priority: 95
+    enabled: true
+    tags:
+      - config
+      - backup
+      - security
+
+  - id: coding-no-hardcoded-secrets
+    name: "禁止硬编码密钥"
+    condition:
+      keywords:
+        - api_key
+        - secret
+        - password
+        - token
+    content: |
+      禁止在代码中硬编码敏感信息：
+      - API 密钥
+      - 密码
+      - 访问令牌
+      
+      使用环境变量或配置文件管理敏感信息。
+    priority: 100
+    enabled: true
+    tags:
+      - security
+      - secrets
+
+  - id: coding-test-first
+    name: "测试先行"
+    condition:
+      files_matching:
+        - "**/src/**/*.py"
+        - "**/lib/**/*.js"
+    content: |
+      编写新功能时：
+      1. 先写测试用例
+      2. 实现功能
+      3. 确保测试通过
+      4. 代码审查
+    priority: 70
+    enabled: true
+    tags:
+      - testing
+      - quality

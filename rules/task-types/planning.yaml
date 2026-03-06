@@ -1,0 +1,37 @@
+version: "1.0"
+kind: task-type
+name: planning
+description: Planning task rules
+enabled: true
+rules:
+  - id: planning-breakdown-tasks
+    name: "任务分解"
+    condition:
+      task_type: planning
+    content: |
+      规划任务时：
+      1. 分解为可执行的小任务
+      2. 明确每个任务的输入输出
+      3. 标注依赖关系
+      4. 估算工作量
+    priority: 70
+    enabled: true
+    tags:
+      - breakdown
+      - estimation
+
+  - id: planning-risk-assessment
+    name: "风险评估"
+    condition:
+      task_type: planning
+    content: |
+      计划中需要包含风险评估：
+      - 可能的技术难点
+      - 依赖项风险
+      - 时间风险
+      - 回退方案
+    priority: 65
+    enabled: true
+    tags:
+      - risk
+      - assessment

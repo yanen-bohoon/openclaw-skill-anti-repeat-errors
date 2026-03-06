@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://openclaw.dev/schemas/guardrails/v1.0.json",
+  "title": "OpenClaw Guardrail Rules Schema",
+  "description": "Schema for before_tool_call guardrail rules",
+  "type": "object",
+  "required": ["version", "kind", "name", "rules"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$",
+      "description": "Schema version"
+    },
+    "kind": {
+      "type": "string",
+      "const": "guardrail",
+      "description": "Must be 'guardrail' for guardrail rules"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/GuardrailRule"
+      }
+    }
+  },
+  "definitions": {
+    "ToolCallPattern": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "description": "Exact tool name match"
+        },
+        "tool_pattern": {
+          "type": "string",
+          "description": "Regex pattern for tool name"
+        },
+        "param_patterns": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Param name -> regex pattern"
+        },
+        "param_contains": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Param name -> list of keywords"
+        },
+        "param_paths": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "Param name -> glob patterns for file paths"
+        }
+      }
+    },
+    "RewriteRule": {
+      "type": "object",
+      "required": ["type", "target_param", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["replace", "prepend", "append", "template"],
+          "description": "Rewrite type"
+        },
+        "target_param": {
+          "type": "string",
+          "description": "Parameter to rewrite"
+        },
+        "value": {
+          "type": "string",
+          "description": "Value to use in rewrite"
+        },
+        "template_vars": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GuardrailRule": {
+      "type": "object",
+      "required": ["id", "name", "pattern", "action"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "description": {
+          "type": "string"
+        },
+        "pattern": {
+          "$ref": "#/definitions/ToolCallPattern"
+        },
+        "action": {
+          "type": "string",
+          "enum": ["rewrite", "block", "warn", "log"]
+        },
+        "rewrite": {
+          "$ref": "#/definitions/RewriteRule"
+        },
+        "block_message": {
+          "type": "string"
+        },
+        "warn_message": {
+          "type": "string"
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 50
+        },
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

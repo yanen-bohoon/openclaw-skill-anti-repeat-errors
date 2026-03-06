@@ -1,0 +1,29 @@
+version: '1.0'
+kind: guardrail
+name: auto-generated
+description: Auto-generated guardrail rules
+enabled: true
+rules:
+- id: auto-exec-cluster_0000
+  name: '自动生成: exec 错误防护'
+  description: 基于 1 次重复错误自动生成
+  pattern:
+    tool: exec
+    tool_pattern: null
+    param_patterns:
+      command: ^git\b
+    param_contains: null
+    param_paths: null
+  action: log
+  rewrite: null
+  block_message: null
+  warn_message: null
+  priority: 65
+  enabled: false
+  tags:
+  - auto-generated
+  - cluster:cluster_0000
+  - auto-generated
+  context_condition: null
+  rolled_back_at: '2026-03-06T10:46:46.705355'
+  rolled_back_from: v2026-03-06T10-40-56-061917

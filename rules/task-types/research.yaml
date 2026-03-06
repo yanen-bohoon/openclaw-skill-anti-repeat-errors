@@ -1,0 +1,36 @@
+version: "1.0"
+kind: task-type
+name: research
+description: Research task rules
+enabled: true
+rules:
+  - id: research-cite-sources
+    name: "引用来源"
+    condition:
+      task_type: research
+    content: |
+      研究结果需要：
+      1. 标注信息来源
+      2. 提供原始链接
+      3. 注明时效性
+      4. 区分事实与观点
+    priority: 80
+    enabled: true
+    tags:
+      - citation
+      - quality
+
+  - id: research-verify-info
+    name: "交叉验证"
+    condition:
+      task_type: research
+    content: |
+      重要信息需要交叉验证：
+      - 查找多个来源
+      - 对比不同来源的一致性
+      - 标注不确定信息
+    priority: 75
+    enabled: true
+    tags:
+      - verification
+      - quality

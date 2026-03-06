@@ -1,0 +1,35 @@
+version: "1.0"
+kind: phase
+name: phase-3
+description: Phase 3 - 自动化阶段，减少确认负担
+enabled: true
+rules:
+  - id: phase-3-auto-commit
+    name: "自动提交规则"
+    condition:
+      phase: 3
+    content: |
+      此阶段可自动提交小改动，但以下情况仍需确认：
+      - 涉及敏感文件
+      - 变更超过 10 个文件
+      - 删除操作
+    priority: 70
+    enabled: true
+    tags:
+      - git
+      - automation
+
+  - id: phase-3-logging
+    name: "记录操作日志"
+    condition:
+      phase: 3
+    content: |
+      自动化操作需记录到日志：
+      - 操作类型
+      - 受影响文件
+      - 执行时间
+      - 结果状态
+    priority: 60
+    enabled: true
+    tags:
+      - logging

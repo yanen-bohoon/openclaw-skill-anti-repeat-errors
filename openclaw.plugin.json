@@ -1,0 +1,79 @@
+{
+  "id": "anti-repeat-errors",
+  "name": "Anti-Repeat-Errors",
+  "version": "0.2.0",
+  "description": "Proactively prevents repeated errors by injecting context-aware rules and intercepting problematic tool calls",
+  "author": "OpenClaw",
+  "license": "MIT",
+  "main": "index.ts",
+  "hooks": [
+    {
+      "event": "before_prompt_build",
+      "handler": "registerBeforePromptBuildHook",
+      "priority": 100
+    },
+    {
+      "event": "before_tool_call",
+      "handler": "registerBeforeToolCallHook",
+      "priority": 100
+    }
+  ],
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable/disable all hooks"
+      },
+      "rulesDir": {
+        "type": "string",
+        "default": "~/.openclaw/skills/anti-repeat-errors/rules",
+        "description": "Directory containing injection rule files"
+      },
+      "logLevel": {
+        "type": "string",
+        "enum": ["debug", "info", "warn", "error"],
+        "default": "info",
+        "description": "Logging level"
+      },
+      "injectTimeout": {
+        "type": "number",
+        "default": 1000,
+        "description": "Max time (ms) for injection processing"
+      },
+      "cacheEnabled": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable rule caching"
+      },
+      "cacheTtlSeconds": {
+        "type": "number",
+        "default": 300,
+        "description": "Cache TTL in seconds"
+      },
+      "guardrailEnabled": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable/disable the before_tool_call guardrail hook"
+      },
+      "guardrailTimeout": {
+        "type": "number",
+        "default": 500,
+        "description": "Max time (ms) for guardrail processing"
+      },
+      "guardrailRulesDir": {
+        "type": "string",
+        "default": "~/.openclaw/skills/anti-repeat-errors/rules/guardrails",
+        "description": "Directory containing guardrail rule files"
+      }
+    }
+  },
+  "capabilities": {
+    "hooks": true,
+    "metrics": true
+  },
+  "engines": {
+    "openclaw": ">=0.1.0"
+  }
+}

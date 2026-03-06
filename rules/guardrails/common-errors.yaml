@@ -1,0 +1,136 @@
+# Guardrail Rules: Common Error Patterns
+# 防止高频错误模式的工具调用拦截规则
+
+version: "1.0"
+kind: guardrail
+name: common-errors
+description: Common error patterns to guard against
+enabled: true
+
+rules:
+  # 1. Git 操作拦截
+  - id: guard-git-operations
+    name: "禁止 Git 操作"
+    description: "当前阶段禁止直接 git 操作"
+    pattern:
+      tool: exec
+      param_patterns:
+        command: "^git\\s+(status|add|commit|push|pull|log|rm|branch|checkout)"
+    action: block
+    block_message: |
+      ⛔ Git 操作已拦截
+      
+      当前阶段禁止直接使用 git 命令。
+      如需版本控制操作，请先与用户确认。
+      
+      原命令将被阻断，请改用其他方式或请求用户授权。
+    priority: 100
+    enabled: true
+    tags:
+      - git
+      - version-control
+
+  # 2. 敏感文件修改拦截
+  - id: guard-sensitive-config
+    name: "敏感配置保护"
+    description: "敏感配置文件修改需要备份确认"
+    pattern:
+      tool: write
+      param_paths:
+        file_path:
+          - "**/.openclaw/openclaw.json"
+          - "**/.config/openclaw/gateway.env"
+          - "**/.openclaw/cron/jobs.json"
+          - "**/Library/LaunchAgents/ai.openclaw.*.plist"
+    action: warn
+    warn_message: |
+      ⚠️ 敏感配置文件修改提醒
+      
+      您正在修改敏感配置文件。建议：
+      1. 先备份原文件
+      2. 仅做最小改动
+      3. 改后运行健康检查
+      
+      确认继续吗？
+    priority: 95
+    enabled: true
+    tags:
+      - config
+      - security
+
+  # 3. 强制命令添加确认
+  - id: guard-force-commands
+    name: "强制命令拦截"
+    description: "拦截可能导致不可逆操作的强制命令"
+    pattern:
+      tool: exec
+      param_contains:
+        command:
+          - "--force"
+          - "-f"
+          - "--yes"
+          - "-y"
+          - "rm -rf"
+    action: block
+    block_message: |
+      ⛔ 强制操作已拦截
+      
+      检测到强制选项（--force/-f/--yes/-y/rm -rf）。
+      此类操作可能导致不可逆结果。
+      
+      请移除强制选项或显式确认后重试。
+    priority: 90
+    enabled: true
+    tags:
+      - destructive
+      - safety
+
+  # 4. 硬编码密钥检测
+  - id: guard-secrets-in-code
+    name: "硬编码密钥检测"
+    description: "检测代码中的硬编码密钥"
+    pattern:
+      tool: write
+      param_patterns:
+        content: "(api_key|secret|password|token)\\s*=\\s*['\"](?![A-Z_]+['\"])[^'\"]+['\"]"
+    action: warn
+    warn_message: |
+      ⚠️ 检测到可能的硬编码密钥
+      
+      代码中包含敏感信息的硬编码：
+      - API Key
+      - Secret
+      - Password
+      - Token
+      
+      建议使用环境变量或配置文件管理敏感信息。
+    priority: 85
+    enabled: true
+    tags:
+      - security
+      - secrets
+
+  # 5. 路径遍历保护
+  - id: guard-path-traversal
+    name: "路径遍历保护"
+    description: "阻止危险路径操作"
+    pattern:
+      tool_pattern: "write|edit|exec"
+      param_patterns:
+        file_path: "(\\.\\./|/etc/|/usr/|/var/|~root/)"
+    action: block
+    block_message: |
+      ⛔ 危险路径操作已拦截
+      
+      检测到路径遍历或系统目录操作：
+      - ../ 上级目录
+      - /etc/ 系统配置
+      - /usr/ 系统程序
+      - /var/ 系统数据
+      
+      请使用项目内路径。
+    priority: 95
+    enabled: true
+    tags:
+      - security
+      - filesystem

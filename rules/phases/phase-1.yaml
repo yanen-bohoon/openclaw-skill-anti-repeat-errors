@@ -1,0 +1,33 @@
+version: "1.0"
+kind: phase
+name: phase-1
+description: Phase 1 - 禁止直接 git 操作，强制确认
+enabled: true
+rules:
+  - id: phase-1-git-ban
+    name: "禁止直接 git 操作"
+    condition:
+      phase: 1
+    content: |
+      当前阶段禁止直接 git 操作（含 status/add/commit/log/rm 等）。
+      任何版本控制操作前必须先征求确认。
+    priority: 100
+    enabled: true
+    tags:
+      - git
+      - security
+
+  - id: phase-1-confirm-actions
+    name: "重要操作需确认"
+    condition:
+      phase: 1
+    content: |
+      在执行以下操作前，必须获得用户确认：
+      - 删除文件或目录
+      - 修改系统配置
+      - 安装/卸载软件包
+      - 发送外部请求
+    priority: 90
+    enabled: true
+    tags:
+      - confirmation
