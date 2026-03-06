@@ -54,7 +54,7 @@ interface PluginConfig {
  * Register the before_prompt_build hook
  */
 export function registerBeforePromptBuildHook(api: PluginApi, config: PluginConfig): void {
-  const logger = api.logger.child({ component: "anti-repeat-errors" });
+  const logger = api.logger;
 
   api.registerHook(
     "before_prompt_build",

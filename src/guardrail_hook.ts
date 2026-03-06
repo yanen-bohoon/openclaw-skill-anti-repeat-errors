@@ -40,7 +40,7 @@ interface PluginConfig {
  * Register the before_tool_call hook
  */
 export function registerBeforeToolCallHook(api: PluginApi, config: PluginConfig): void {
-  const logger = api.logger.child({ component: "anti-repeat-errors.guardrail" });
+  const logger = api.logger;
 
   // Check if guardrail is enabled
   if (config.guardrailEnabled === false) {
